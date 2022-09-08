@@ -1,0 +1,277 @@
+------------------------------
+----------Person--------------
+------------------------------
+
+CREATE TABLE Person
+(
+	IDPerson int primary key identity,
+	FirstName nvarchar(20) not null,
+	LastName nvarchar(20) not null,
+	Age int not null,
+	Email nvarchar(30) not null,
+	Picture varbinary(max) null
+)
+GO
+
+CREATE PROC GetPeople
+AS
+SELECT * FROM Person
+GO
+
+CREATE PROC GetPerson
+	@idPerson int
+AS
+SELECT * FROM Person WHERE IDPerson = @idPerson
+GO
+
+CREATE PROC DeletePerson
+	@idPerson int
+AS
+DELETE FROM Person WHERE IDPerson = @idPerson
+GO
+
+CREATE PROC AddPerson
+	@firstname nvarchar(20),
+	@lastname nvarchar(20),
+	@age int,
+	@email nvarchar(30),
+	@picture varbinary(max),
+	@idPerson INT OUTPUT
+AS 
+BEGIN
+INSERT INTO Person VALUES (@firstname, @lastname, @age, @email, @picture)
+	SET @idPerson = SCOPE_IDENTITY()
+END
+GO
+
+CREATE PROC UpdatePerson
+	@firstname nvarchar(20),
+	@lastname nvarchar(20),
+	@age int,
+	@email nvarchar(30),
+	@picture varbinary(max),
+	@idPerson int
+AS
+UPDATE Person SET 
+		FirstName = @firstname,
+		LastName = @lastname,
+		Age = @age,
+		Email = @email,
+		Picture = @picture
+	WHERE 
+		IDPerson = @idPerson
+
+
+--------------------------------
+------------Student-------------
+--------------------------------
+CREATE TABLE Student
+(
+	IDStudent int primary key identity,
+	FirstName nvarchar(20) not null,
+	LastName nvarchar(20) not null,
+	Age int not null,
+	Email nvarchar(30) not null,
+	Picture varbinary(max) null,
+	SubjectID int FOREIGN KEY REFERENCES Subjectt(IDSubject),
+	StudentSubjectName nvarchar(50) not null
+)
+GO
+
+
+CREATE PROC GetStudents
+AS
+SELECT * FROM Student
+GO
+
+CREATE PROC GetStudent
+	@idStudent int
+AS
+SELECT * FROM Student WHERE IDStudent = @idStudent
+GO
+
+CREATE PROC DeleteStudent
+	@idStudent int
+AS
+DELETE FROM Student WHERE IDStudent = @idStudent
+GO
+
+CREATE PROC AddStudent
+	@firstname nvarchar(20),
+	@lastname nvarchar(20),
+	@age int,
+	@email nvarchar(30),
+	@picture varbinary(max),
+	@idStudent INT OUTPUT,
+	@subjectId int,
+	@subjectname nvarchar(20)
+
+AS 
+BEGIN
+INSERT INTO Student VALUES (@firstname, @lastname, @age, @email, @picture, @subjectID, @subjectname)
+	SET @idStudent = SCOPE_IDENTITY()
+END
+GO
+
+CREATE PROC UpdateStudent
+	@firstname nvarchar(20),
+	@lastname nvarchar(20),
+	@age int,
+	@email nvarchar(30),
+	@picture varbinary(max),
+	@idStudent int,
+	@subjectId int,
+	@subjectname nvarchar(20)
+AS
+
+UPDATE Student SET 
+		FirstName = @firstname,
+		LastName = @lastname,
+		Age = @age,
+		Email = @email,
+		Picture = @picture,
+		SubjectID = @subjectId,
+		StudentSubjectName = @subjectname
+	WHERE 
+		IDStudent = @idStudent
+
+
+
+--------------------------------
+------------Subject-------------
+--------------------------------
+
+CREATE TABLE Subjectt
+(
+	IDSubject int primary key identity,
+	SubjectName nvarchar(20) not null,
+	ECTS int not null
+)
+GO
+
+
+CREATE PROC GetSubjects
+AS
+SELECT * FROM Subjectt
+GO
+
+CREATE PROC GetSubject
+	@idSubject int
+AS
+SELECT * FROM Subjectt WHERE IDSubject = @idSubject
+GO
+
+CREATE PROC DeleteSubject
+	@idSubject int
+AS
+DELETE FROM Subjectt WHERE IDSubject = @idSubject
+GO
+
+CREATE PROC AddSubject
+	@subjectname nvarchar(20),
+	@ects int,
+	@idSubject INT OUTPUT
+AS 
+BEGIN
+INSERT INTO Subjectt VALUES (@subjectname, @ects)
+	SET @idSubject = SCOPE_IDENTITY()
+END
+GO
+
+CREATE PROC UpdateSubject
+	@subjectname nvarchar(20),
+	@ects int,
+	@idSubject int
+AS
+
+UPDATE Subjectt SET 
+		SubjectName = @subjectname,
+		ECTS = @ects
+	WHERE 
+		IDSubject = @idSubject
+
+
+
+--------------------------------
+------------Company-------------
+--------------------------------
+--CREATE TABLE Company
+--(
+--	IDCompany int primary key identity,
+--	Name nvarchar(20) not null,
+--)
+--GO
+
+--CREATE PROC GetCompanies
+--AS
+--SELECT * FROM Company
+--GO
+
+--CREATE PROC GetCompany
+--	@idCompany int
+--AS
+--SELECT * FROM Company WHERE IDCompany = @idCompany
+--GO
+
+--CREATE PROC DeleteCompany
+--	@idCompany int
+--AS
+--DELETE FROM Company WHERE IDCompany = @idCompany
+--GO
+
+--CREATE PROC AddCompany
+--	@name nvarchar(20),
+--	@idCompany INT OUTPUT
+--AS 
+--BEGIN
+--INSERT INTO Company VALUES (@name)
+--	SET @idCompany = SCOPE_IDENTITY()
+--END
+--GO
+
+--CREATE PROC UpdateCompany
+--	@name nvarchar(20),
+--	@idCompany int
+--AS
+--UPDATE Company SET 
+--		Name = @name
+--	WHERE 
+--		IDCompany = @idCompany
+
+--------------------------------
+------------PersonInCompany-----
+--------------------------------
+
+--CREATE TABLE PersonInCompany
+--(
+--	IDPersoninCompany int primary key identity,
+--	PersonID int FOREIGN KEY REFERENCES Person(IDPerson),
+--	CompanyID int FOREIGN KEY REFERENCES Company(IDCompany)
+--)
+--go
+
+--create  proc SetPersoninCompany
+--	@idPerson int,
+--	@idCompany int,
+--	@idPersoninCompany INT OUTPUT
+
+--as
+--begin
+--	insert into PersonInCompany values (@idPerson, @idCompany)
+--	SET @idPersoninCompany = SCOPE_IDENTITY()
+--end
+--go
+
+--create proc GetPersonInCompany
+--	@idCompany int
+--	as
+--begin 
+--	select Person.FirstName + " " + Person.LastName 
+--	from PersonInCompany
+--	inner join Person on PersonID = IDPerson
+--	inner join Company on CompanyID = IDCompany
+--	where @idCompany = CompanyID
+--end
+--go
+
+
